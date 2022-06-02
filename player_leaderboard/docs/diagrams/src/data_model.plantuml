@@ -1,0 +1,38 @@
+@startuml
+
+entity Player {
+    * Player_ID : 32-bit Integer <<generated>>
+    --
+    * Player_Username : string
+    * Full_Name : string
+    * Address : string
+    * City : string
+    * State : string
+    * Zip : Integer
+    * Email : string
+    --
+    * Account_Created_Date: : DateTime
+    * Last_Login_Date : DateTime
+}
+
+entity Game {
+    * Game_ID : 64-bit Integer <<generated>>
+    --
+    * Start_DateTime : DateTime
+    * Finish_DateTime : DateTime
+    * Game_Type : string
+    * Region : string
+}
+
+entity Game_Score {
+    * Game_Score_ID : 64-bit Integer <<generated>>
+    --
+    * Game_ID : 64-bit Integer <<FK>>
+    * Player_ID : 32-bit Integer <<FK>>
+    * Score : 32-bit Integer
+}
+
+Game ||--|{ Game_Score
+Player ||--|{ Game_Score
+
+@enduml

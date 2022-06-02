@@ -1,0 +1,9 @@
+@startuml Expire_Score
+participant "Expire Score Service" as Expire
+participant "Leaderboard Cache" as Cache
+database "Leadboard Database" as DB
+
+Expire -> Expire: ScoreExpiredNotification(ScoreID)
+Expire -> DB: RemoveScore(ScoreID)
+Expire -> Cache: RemoveScore(ScoreID)
+@enduml

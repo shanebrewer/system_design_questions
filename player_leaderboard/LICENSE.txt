@@ -1,0 +1,5 @@
+I am providing these code and resources in this repository specifically for Epic Games evalaution 
+purposes. These contents may not be shared outside of Epic Games without written permission by the 
+author Shane Brewer (shane.brewer@gmail.com)
+
+Copyright 2021 Shane Brewer

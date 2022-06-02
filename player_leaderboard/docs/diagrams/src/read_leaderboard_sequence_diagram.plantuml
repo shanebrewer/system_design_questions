@@ -1,0 +1,21 @@
+@startuml Read_Leaderboard
+participant "Client" as Client
+participant "API Gateway" as API
+collections "Read API Service" as Read
+participant "Leaderboard Cache" as Cache
+
+Client -> API: ReadLeaderboard()
+API -> Read: ReadLeaderboard()
+
+loop For each game type (4)
+    loop For each aggregation (daily, weekly, all-time)
+        loop 1 to 100 scores
+            Read -> Cache: getScoreInformation()
+            Cache --> Read: PlayerID, PlayerInfo, Rank, Score
+        end
+    end
+end
+
+Read --> API: Leaderboard
+API --> Client: Leaderboard
+@enduml

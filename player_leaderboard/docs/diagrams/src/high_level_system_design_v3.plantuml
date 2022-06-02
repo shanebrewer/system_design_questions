@@ -1,0 +1,32 @@
+@startuml
+actor Player
+top to bottom direction
+
+package "Clients" {
+Player --> [Web Client]
+Player --> [Mobile App Client]
+Player --> [Game Client]
+}
+
+[Web Client] --> [DNS]
+[Mobile App Client] --> [DNS]
+[Game Client] --> [DNS]
+
+[Web Client] --> [CDN]
+[Mobile App Client] --> [CDN]
+[Game Client] --> [CDN]
+
+[CDN] --> [Object Store]
+
+[Web Client] --> [API Gateway]
+[Mobile App Client] --> [API Gateway]
+[Game Client] --> [API Gateway]
+
+[API Gateway] --> [Write API Service]
+[API Gateway] --> [Read API Service]
+
+database "Database" {
+    [Read API Service] --> [DynamoDB]
+    [Write API Service] --> [DynamoDB]
+}
+@enduml

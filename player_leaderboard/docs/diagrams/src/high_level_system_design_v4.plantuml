@@ -1,0 +1,58 @@
+@startuml
+actor Player
+top to bottom direction
+
+package "Clients" {
+    Player --> [Web Client]
+    Player --> [Mobile App Client]
+    Player --> [Game Client]
+}
+
+[Web Client] <--> [DNS]
+[Mobile App Client] <--> [DNS]
+[Game Client] <--> [DNS]
+
+[Web Client] --> [CDN]
+[Mobile App Client] --> [CDN]
+[Game Client] --> [CDN]
+
+[CDN] --> [Object Store]
+
+[Web Client] --> [API Gateway]
+[Mobile App Client] --> [API Gateway]
+[Game Client] --> [API Gateway]
+
+package "Write API" {
+    [API Gateway] --> [Write API LB]
+    [Write API LB] --> [Write API Service 1]
+    [Write API LB] --> [Write API Service 2]
+    [Write API LB] --> [Write API Service X]
+}
+
+package "Read API" {
+    [API Gateway] --> [Read API LB]
+    [Read API LB] --> [Read API Service 1]
+    [Read API LB] --> [Read API Service 2]
+    [Read API LB] --> [Read API Service X]
+}
+
+database "DynamoDB" {
+    [Write API Service 1] --> [Leaderboard Table]
+    [Write API Service 2] --> [Leaderboard Table]
+    [Write API Service X] --> [Leaderboard Table]
+
+    [Write API Service 1] --> [Game Table]
+    [Write API Service 2] --> [Game Table]
+    [Write API Service X] --> [Game Table]
+
+    [Write API Service 1] --> [Game Score Table]
+    [Write API Service 2] --> [Game Score Table]
+    [Write API Service X] --> [Game Score Table]
+
+    [Read API Service 1] --> [Leaderboard Table]
+    [Read API Service 2] --> [Leaderboard Table]
+    [Read API Service X] --> [Leaderboard Table]
+
+
+}
+@enduml

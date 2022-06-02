@@ -1,0 +1,36 @@
+@startuml
+
+entity Daily_Leaderboard {
+    * Leaderboard_Score_ID : 64-bit Integer <<generated>>
+    --
+    * Player_ID : 32-bit Integer <<FK>>
+    * Game_ID : 64-bit Integer <<FK>>
+    * Game_Type : string
+    * Rank : 32-bit Integer
+    * Game_Start_DateTime : DateTime
+    * Score : 32-bit Integer
+}
+
+entity Weekly_Leaderboard {
+    * Leaderboard_Score_ID : 64-bit Integer <<generated>>
+    --
+    * Player_ID : 32-bit Integer <<FK>>
+    * Game_ID : 64-bit Integer <<FK>>
+    * Game_Type : string
+    * Rank : 32-bit Integer
+    * Game_Start_DateTime : DateTime
+    * Score : 32-bit Integer
+}
+
+entity All_Time_Leaderboard {
+    * Leaderboard_Score_ID : 64-bit Integer <<generated>>
+    --
+    * Player_ID : 32-bit Integer <<FK>>
+    * Game_ID : 64-bit Integer <<FK>>
+    * Game_Type : string
+    * Rank : 32-bit Integer
+    * Game_Start_DateTime : DateTime
+    * Score : 32-bit Integer
+}
+
+@enduml

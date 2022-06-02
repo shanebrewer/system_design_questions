@@ -1,0 +1,56 @@
+@startuml Submit_Game_Data
+
+participant "Game Server" as Client
+participant "API Gateway" as API
+collections "Write API Service" as Write
+participant "Leaderboard Cache" as Cache
+participant "Expire Score Service" as Expire
+database "Leaderboard Table" as Leaderboard
+database "Game Table" as Game
+database "Game Score Table" as Score
+
+
+Client -> API: SubmitGameResults()
+API -> Write: SubmitGameResults()
+
+loop For each game score
+
+Write -> Score: WriteScore(GameType, PlayerID, Score)
+Write -> Game: WriteGameData(GameType)
+
+Write -> Cache: GetHighScore(GameType, Daily, 200)
+note right: Gets the lowest score on the leaderboard
+
+Cache --> Write: Lowest Score on Daily Leaderboard
+
+    alt New Daily High Score
+    Write -> Cache: WriteScore(GameType, Daily, Score)
+    note right: O(200) operation
+    Write -> Leaderboard: WriteScore(GameType, Daily Score)
+    note right: Store score in the leaderboard database
+    Write -> Expire:CreateNewExpiration(Score, DateTime.Now() + 24 hours)
+
+    Write -> Cache: GetHighScore(GameType, Weekly, 200)
+    Cache --> Write: Lowest Score on Weekly Leaderboard
+
+        alt New Weekly High Score
+        Write -> Cache: WriteScore(GameType, Weekly, Score)
+        Write -> Leaderboard: WriteScore(GameType, Weekly, Score)
+
+        Write -> Expire:CreateNewExpiration(Score, DateTime.Now() + 7 days)
+
+        Write -> Cache: GetHighScore(GameType, All-time, 200)
+        Cache --> Write: Lowest Score on All-time Leaderboard
+        
+            alt New All-time High Score
+            Write -> Cache: WriteScore(GameType, All-time, Score)
+            Write -> Leaderboard: WriteScore(GameType, All-time, Score)
+            end
+        end
+    end
+end
+
+Write --> API: 200 Success
+API --> Client: 200 Success
+
+@enduml

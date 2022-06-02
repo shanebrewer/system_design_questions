@@ -1,0 +1,29 @@
+@startuml Populate_Cache
+participant "Client" as Client
+participant "API Gateway" as API
+collections "Read API Service" as Read
+participant "Leaderboard Cache" as Cache
+database "Leadboard Database" as DB
+
+Client -> API: ReadLeaderboard()
+API -> Read: ReadLeaderboard()
+
+alt Cache Service unavailable or Cache Miss
+    loop For each game type (4)
+        loop For each aggregation (daily, weekly, all-time)
+            loop 1 to 100 scores
+                Read -> DB: getScoreInformation()
+                DB -> Read: PlayerID, PlayerInfo, Rank, Score
+            end
+        end
+    end
+end
+
+alt Cache Miss
+    Read -> Cache: WriteLeaderboardInfo()
+    note right: Populate the cache from the Database
+end
+
+Read --> API: Leaderboard
+API --> Client: Leaderboard
+@enduml

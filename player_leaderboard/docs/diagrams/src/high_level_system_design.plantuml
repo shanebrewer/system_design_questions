@@ -1,0 +1,22 @@
+@startuml
+actor Player
+top to bottom direction
+
+package "Clients" {
+Player --> [Web Client]
+Player --> [Mobile App Client]
+Player --> [Game Client]
+}
+
+[Web Client] --> [API Gateway]
+[Mobile App Client] --> [API Gateway]
+[Game Client] --> [API Gateway]
+
+[API Gateway] --> [Write API Service]
+[API Gateway] --> [Read API Service]
+
+database "Database" {
+    [Read API Service] --> [Database]
+    [Write API Service] --> [Database]
+}
+@enduml
