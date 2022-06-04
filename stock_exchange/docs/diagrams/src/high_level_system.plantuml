@@ -1,3 +1,46 @@
-@startuml
+@startuml Exchange System Design Architecture
+actor Trader
+top to bottom direction
 
+package "Clients" {
+    Trader --> [Web Client]
+    Trader --> [Mobile App Client]
+}
+
+[Web Client] --> [REST API Gateway]
+[Mobile App Client] --> [REST API Gateway]
+
+[Web Client] --> [Websocket API Gateway]
+[Mobile App Client] --> [Websocket API Gateway]
+
+
+package "Order Entry API" {
+    [REST API Gateway] --> [Order Entry API LB]
+    [Order Entry API LB] --> [Order Entry API Service 1]
+    [Order Entry API LB] --> [Order Entry API Service 2]
+    [Order Entry API LB] --> [Order Entry API Service X]
+}
+
+[Order Entry API Service 1] --> [Ledger Service]
+
+database "Ledger" {
+
+    
+}
+
+database "Database" {
+    [Score Expiry Service] --> [Leaderboard Table]
+
+    [Write API Service 1] --> [Leaderboard Table]
+    [Write API Service 2] --> [Leaderboard Table]
+    [Write API Service X] --> [Leaderboard Table]
+
+    [Write API Service 1] --> [Game Table]
+    [Write API Service 2] --> [Game Table]
+    [Write API Service X] --> [Game Table]
+
+    [Write API Service 1] --> [Game Score Table]
+    [Write API Service 2] --> [Game Score Table]
+    [Write API Service X] --> [Game Score Table]
+}
 @enduml
