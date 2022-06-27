@@ -5,14 +5,23 @@ top to bottom direction
 package "Clients" {
     Trader --> [Web Client]
     Trader --> [Mobile App Client]
+    Trader --> [Trading Program]
 }
 
 [Web Client] --> [REST API Gateway]
 [Mobile App Client] --> [REST API Gateway]
+[Trading Program] --> [REST API Gateway]
 
-[Web Client] --> [Websocket API Gateway]
-[Mobile App Client] --> [Websocket API Gateway]
+[Trading Program] <--> [Websocket FIX Gateway]
 
+[Web Client] <--> [Market Data Websocket]
+[Mobile App Client] <--> [Market Data Websocket]
+[Trading Program] <--> [Market Data Websocket]
+
+package "Fix API" {
+    [Web Client] <--> [Websocket FIX Gateway]
+    [Mobile App Client] <--> [Websocket FIX Gateway]
+}
 
 package "Order Entry API" {
     [REST API Gateway] --> [Order Entry API LB]
@@ -22,25 +31,31 @@ package "Order Entry API" {
 }
 
 [Order Entry API Service 1] --> [Ledger Service]
+[Order Entry API Service 1] --> [Trading Engine]
+
+[Websocket FIX Gateway] --> [Ledger Service]
+[Websocket FIX Gateway] --> [Trading Engine]
 
 database "Ledger" {
-
-    
+    [Ledger Service] --> [User Account Table]
 }
 
-database "Database" {
-    [Score Expiry Service] --> [Leaderboard Table]
+[Ledger Service] --> [Users Service]
 
-    [Write API Service 1] --> [Leaderboard Table]
-    [Write API Service 2] --> [Leaderboard Table]
-    [Write API Service X] --> [Leaderboard Table]
-
-    [Write API Service 1] --> [Game Table]
-    [Write API Service 2] --> [Game Table]
-    [Write API Service X] --> [Game Table]
-
-    [Write API Service 1] --> [Game Score Table]
-    [Write API Service 2] --> [Game Score Table]
-    [Write API Service X] --> [Game Score Table]
+database "Users" {
+    [Users Service] --> [Users Table]
 }
+
+queue "Message Bus"
+
+[Trading Engine] --> [Message Bus]
+[Trading Engine] --> [Data Feed Service]
+
+[Message Bus] --> [Reporting]
+[Message Bus] --> [Clearing Service]
+
+database "Clearing (Postgres)" {
+    [Clearing Service] --> [Clearing Table]
+}
+
 @enduml
