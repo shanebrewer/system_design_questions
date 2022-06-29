@@ -1,0 +1,12 @@
+@startuml Amex Synchronous Connection To Amazon
+autonumber
+actor Customer
+
+Customer -> WFM: Place Order
+WFM --> Vantiv: Charge
+Vantiv --> Amex: Charge
+
+Amex --> Amazon: Get Reward(Transaction)
+Amazon --> Amex: Reward Type and Amount
+
+@enduml

@@ -1,0 +1,13 @@
+@startuml Rewards Batch File
+autonumber
+actor Customer
+
+Customer -> WFM: Place Order
+WFM --> Vantiv: Charge
+Vantiv --> Amex: Charge
+
+Amex --> Amazon: SBCC Charge Batch File
+Amazon --> Amazon: Process Batch File
+Amazon --> Amex: SBCC Rewards Batch File
+
+@enduml

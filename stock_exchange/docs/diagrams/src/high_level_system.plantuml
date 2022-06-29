@@ -12,7 +12,7 @@ package "Clients" {
 [Mobile App Client] --> [REST API Gateway]
 [Trading Program] --> [REST API Gateway]
 
-[Trading Program] <--> [Websocket FIX Gateway]
+
 
 [Web Client] <--> [Market Data Websocket]
 [Mobile App Client] <--> [Market Data Websocket]
@@ -21,17 +21,13 @@ package "Clients" {
 package "Fix API" {
     [Web Client] <--> [Websocket FIX Gateway]
     [Mobile App Client] <--> [Websocket FIX Gateway]
+    [Trading Program] <--> [Websocket FIX Gateway]
 }
 
-package "Order Entry API" {
-    [REST API Gateway] --> [Order Entry API LB]
-    [Order Entry API LB] --> [Order Entry API Service 1]
-    [Order Entry API LB] --> [Order Entry API Service 2]
-    [Order Entry API LB] --> [Order Entry API Service X]
-}
+[REST API Gateway] --> [Order Entry API Service]
 
-[Order Entry API Service 1] --> [Ledger Service]
-[Order Entry API Service 1] --> [Trading Engine]
+[Order Entry API Service] --> [Ledger Service]
+[Order Entry API Service] --> [Trading Engine]
 
 [Websocket FIX Gateway] --> [Ledger Service]
 [Websocket FIX Gateway] --> [Trading Engine]

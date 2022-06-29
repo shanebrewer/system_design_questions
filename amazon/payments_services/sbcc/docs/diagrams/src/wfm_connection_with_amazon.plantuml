@@ -1,0 +1,12 @@
+@startuml WFM Connection with Amazon
+autonumber
+actor Customer
+
+Customer -> WFM: Place Order
+WFM --> Amazon: Get Reward
+Amazon --> WFM: Customer Reward Type and Amount
+
+WFM --> Vantiv: Charge(Reward)
+Vantiv --> Amex: Charge(Reward)
+
+@enduml

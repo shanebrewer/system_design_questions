@@ -14,30 +14,35 @@ Personas are ways to categorize and define our users. They provide attributes th
 
 #### Persona: Retail Investor
 
-
+An individual who buys and holds a cryptocurrency for 1 year or longer. Generally interested in the fundaments of a cryptocurrency, not the short-term fluctuations.
 
 #### Persona: Retail Trader
 
-
+An individual who actively buys and sells cryptocurrencies, attempting to capture short-term profit. Interested in charts and technical indicators.
 
 #### Persona: Market Maker
 
-
+An institution that actively trades both sides of the market, attempting to make the spread between the bid and the ask price.
 
 ### Functional Requirements
 
-1. A user can view the leaderboard for a game, which includes the top 100 players for 4 play modes and daily, weekly and all-time aggregations.
-
+1. Place a market order to buy or sell a cryptocurrency.
+1. Place a limit order to buy or sell a cryptocurrency.
+1. Cancel a placed order that is not currently filled.
+1. Get the current status of an order.
+1. Get the last traded price for a cryptocurrency.
+1. Get the current bid and ask prices for a cryptocurrency.
+1. Subscribe to the market data stream for a cryptocurrency
 
 ### Non-functional Requirements
 
-1. The system should be able to handle the load of up to 10 million concurrent players and averages 10,000 game matches end every minute
-
+1. The system should be able to handle up to 1 million transactions per second.
+1. The system should process orders as quickly as possible.
+1. The system should maintain strong consistency for a customer's account balance.
 
 ### Out of Scope Requirements
 
-1. A user can share their ranks on social media networks.
-
+1. Transfer money into a customer's Exchange account.
 
 ---
 
@@ -45,7 +50,11 @@ Personas are ways to categorize and define our users. They provide attributes th
 
 ### Assumptions
 
+## High-Level System Design
 
+The following is an initial basic system design prior to any kind of optimization or scaling.
+
+![High-level System Design Diagram](/docs/diagrams/out/high_level_system_design/high_level_system_design.png)
 
 ## Links
 [Coinbase Exchange APIs](https://docs.cloud.coinbase.com/exchange/docs)
