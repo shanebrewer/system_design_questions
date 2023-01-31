@@ -1,9 +1,0 @@
-@startuml WFM Connection with Amex
-autonumber
-actor Customer
-
-Customer -> WFM: Place Order
-WFM --> Vantiv: Charge
-Vantiv --> Amex: Charge
-
-@enduml
