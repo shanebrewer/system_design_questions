@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-Build a stock exchange system.
+Build a stock exchange system that matches buyers and sellers of an asset efficiently.
 
 ---
 
@@ -40,9 +40,11 @@ An institution that actively trades both sides of the market, attempting to make
 1. The system should process orders as quickly as possible.
 1. The system should maintain strong consistency for a customer's account balance.
 
-### Out of Scope Requirements
+### Out-of-Scope Requirements
 
 1. Transfer money into a customer's Exchange account.
+1. Generate a user's trading history report.
+1. Generate a user's tax statement.
 
 ---
 
