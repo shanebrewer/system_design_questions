@@ -37,14 +37,16 @@ An institution that actively trades both sides of the market, attempting to make
 ### Non-functional Requirements
 
 1. The system should be able to handle up to 1 million transactions per second.
-1. The system should process orders as quickly as possible.
+1. The system should process orders as quickly as possible, ideally with a P99 latency less than 10 ms.
 1. The system should maintain strong consistency for a customer's account balance.
+1. The system should maintain at least 99.99% availability.
 
 ### Out-of-Scope Requirements
 
 1. Transfer money into a customer's Exchange account.
 1. Generate a user's trading history report.
 1. Generate a user's tax statement.
+1. We will not consider trading stocks, options, or futures.
 
 ---
 
@@ -52,11 +54,102 @@ An institution that actively trades both sides of the market, attempting to make
 
 ### Assumptions
 
+- 100 Cryptocurrencies available to trade
+- 1 billion orders per day
+- Trade 24/7
+- Even distribution of trading orders
+
+### Traffic
+
+1 billion orders per day / (24 hours * 60 minutes * 60 seconds) = ~11,574 orders/second
+
+#### Write Traffic
+
+Nearly 100% of our traffic would be considered write traffic, while a small percentage could be considered read traffic, specifically to get the details of an order, or to cancel/modify an existing order, which would considered read then write.
+
+#### Read Traffic
+
+Very little. Less than 1%.
+
+### Bandwidth
+
+
+
+#### Write Bandwidth
+
+#### Read Bandwidth
+
+### Storage
+
 ## High-Level System Design
 
 The following is an initial basic system design prior to any kind of optimization or scaling.
 
-![High-level System Design Diagram](/docs/diagrams/out/high_level_system_design/high_level_system_design.png)
+![High-level System Design Diagram](docs/diagrams/out/exchange_high_level_system_design.png)
+
+### Clients
+
+
+
+### API Gateway
+
+### Application Servers
+
+### Database
+
+---
+
+## API
+
+
+---
+
+## Database and Data Model
+
+![Data Model](docs/diagrams/out/exchange_data_models.png)
+
+### Database Selection
+
+#### Database Decision
+
+---
+
+## Scaling
+
+### DNS
+
+### Content Delivery Network (CDN)
+
+### Horizontal Scaling
+
+### Caching
+
+#### Cache Size
+
+#### Cache Type
+
+---
+
+## Main Use Cases
+
+### Use Case 1:
+
+---
+
+## Operations
+
+### Performance
+
+### Response Quality
+
+### Host Metrics
+
+---
+
+## Tech Stack
+
+---
 
 ## Links
+
 [Coinbase Exchange APIs](https://docs.cloud.coinbase.com/exchange/docs)

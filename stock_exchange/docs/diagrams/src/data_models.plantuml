@@ -1,7 +1,8 @@
-@startuml Exchange Data Models
+@startuml  exchange_data_models
+title Exchagne Data Models
 
 entity Users {
-    * user_id : 64-bit Integer <<generated>>
+    * user_id : 64-bit Integer <<generated>> <<PK>>
     --
     * email : string
     * address : string
@@ -9,20 +10,20 @@ entity Users {
 }
 
 entity Wallet {
-    * wallet_id : 64-bit Integer <<generated>>
+    * wallet_id : 64-bit Integer <<generated>> <<PK>>
     --
     * user_id : 64-bit Integer <<FK>>
 }
 
-entity Instrument {
-    * instrument_id : 64-bit Integer <<generated>>
+entity Cryptocurrency {
+    * cryptocurrency_id : 64-bit Integer <<generated>> <<PK>>
     --
     * instrument_name : string
-    * instrument_ticket : char[4]
+    * instrument_ticker : char[4]
 }
 
 entity Asset_Balance {
-    * asset_balance_id : 64-bit Integer <<generated>>
+    * asset_balance_id : 64-bit Integer <<generated>> <<PK>>
     --
     * instrument_id : 64-bit Integer <<FK>>
     * currency_id : 64-bit Integer <<FK>>
@@ -31,13 +32,17 @@ entity Asset_Balance {
 }
 
 entity Currency {
-    * currency_id : 64-bit Integer <<generated>>
+    * currency_id : 64-bit Integer <<generated>> <<PK>>
     --
     * name : string
     * currency_ticker : char[3]
 }
 
-
+entity Order {
+    * order_id : UUID Integer <<generated>> <<PK>>
+    --
+    * cryptocurrency_id : 
+}
 
 entity Execution {
 

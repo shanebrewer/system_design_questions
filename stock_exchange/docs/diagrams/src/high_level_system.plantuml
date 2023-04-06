@@ -1,4 +1,5 @@
-@startuml Exchange System Design Architecture
+@startuml exchange_high_level_system_design
+title Stock Market Exchange High-Level Architecture
 actor Trader
 top to bottom direction
 
@@ -46,6 +47,7 @@ queue "Message Bus"
 
 [Trading Engine] --> [Message Bus]
 [Trading Engine] --> [Data Feed Service]
+[Data Feed Service] --> [Market Data Websocket]
 
 [Message Bus] --> [Reporting]
 [Message Bus] --> [Clearing Service]
