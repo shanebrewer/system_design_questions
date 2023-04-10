@@ -1,0 +1,10 @@
+@startuml google_crawler_high_level_system_design
+title Google Crawler High-Level Architecture
+left to right direction
+
+
+
+[Seed Webpages] --> [REST API Gateway]
+
+
+@enduml

@@ -1,0 +1,19 @@
+@startuml high_level_system_design
+title High-Level Architecture
+actor Actor
+top to bottom direction
+
+package "Clients" {
+    Actor --> [Web Client]
+    Actor --> [Mobile App Client]
+}
+
+[Web Client] --> [DNS Server]
+[Mobile App Client] --> [DNS Server]
+
+[Web Client] --> [REST API Gateway]
+[Mobile App Client] --> [REST API Gateway]
+
+
+
+@enduml

@@ -1,0 +1,21 @@
+@startuml google_query_high_level_system_design
+title Google Search High-Level Architecture
+actor Publisher
+actor Searcher
+top to bottom direction
+
+package "Clients" {
+    Searcher --> [Web Client]
+    Searcher --> [Mobile App Client]
+}
+
+[Web Client] --> [DNS Server]
+[Mobile App Client] --> [DNS Server]
+
+
+[Web Client] --> [REST API Gateway]
+[Mobile App Client] --> [REST API Gateway]
+
+
+
+@enduml
