@@ -1,0 +1,70 @@
+@startuml Coinbase Direct High-Level System Design
+!include <aws/common>
+!include <aws/Storage/AmazonS3/AmazonS3>
+!include <aws/Storage/AmazonS3/bucket/bucket>
+!include <aws/NetworkingContentDelivery/AmazonCloudFront/AmazonCloudFront>
+!include <aws/ApplicationServices/AmazonAPIGateway/AmazonAPIGateway>
+!include <awslib14/AWSCommon>
+!include <awslib14/ApplicationIntegration/AppSync>
+!include <awslib14/Containers/ElasticKubernetesService>
+!include <awslib14/Database/AuroraPostgreSQLInstance>
+
+title Coinbase Direct High-Level Architecture
+actor "Direct to Exchange User" as DTEUser
+actor "Retail User" as RUser
+top to bottom direction
+
+package CBDirectFrontEnd {
+    AMAZONS3(s3)
+    AMAZONCLOUDFRONT(cf)
+
+    DTEUser --> [CB Direct Web App] : https://exchange.coinbase.com
+    [CB Direct Web App] <--> cf
+    cf <-- s3
+}
+
+package CoinbasePlatform {
+    AMAZONAPIGATEWAY(OrderEntryAPIGateway, "Order Entry API Gateway")
+    AppSync(CoinbaseGraphQL, "Coinbase GraphQL Server", "")
+
+    [CB Direct Web App] --> OrderEntryAPIGateway
+    OrderEntryAPIGateway --> CoinbaseGraphQL
+    CoinbaseGraphQL --> [GraphQL User Resolver]
+    CoinbaseGraphQL --> [GraphQL Report Resolver]
+    CoinbaseGraphQL --> [GraphQL API Key Resolver]
+    CoinbaseGraphQL --> [GraphQL Address Book Resolver] 
+
+    [Datadog Service]
+}
+
+package CBDirectBackend {
+    ElasticKubernetesService(cbd_k8s, "Coinbase Direct Service", "")
+    [GraphQL User Resolver] --> cbd_k8s
+    [GraphQL Report Resolver] --> cbd_k8s
+    [GraphQL API Key Resolver] --> cbd_k8s
+    [GraphQL Address Book Resolver] --> cbd_k8s
+
+    AuroraPostgreSQLInstance(cbd_db, "Coinbase Direct DB", "")
+
+    cbd_k8s --> cbd_db
+    cbd_k8s --> [Datadog Service] : Publish Operational Metrics
+    cbd_db --> [Transfers Table]
+    cbd_db --> [API Keys Table] 
+}
+
+package Transfers {
+    cbd_k8s --> [Transfers Service]
+    [Transfers Service] --> [Fiat Service]
+    [Fiat Service] --> [External Banks]
+    [Transfers Service] --> [Crypto Service]
+    [Crypto Service] --> [Blockchains]
+}
+
+package Exchange {
+    [REST API Gateway]
+    [FIX Gateway]
+    [Market Data Service]
+
+}
+
+@enduml
