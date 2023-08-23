@@ -1,5 +1,5 @@
-@startuml  exchange_data_models
-title Exchagne Data Models
+@startuml Exchange Data Models 
+title Exchange Data Models
 
 entity Users {
     * user_id : 64-bit Integer <<generated>> <<PK>>
