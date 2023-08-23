@@ -1,0 +1,52 @@
+@startuml  exchange_data_models
+title Exchagne Data Models
+
+entity Users {
+    * user_id : 64-bit Integer <<generated>> <<PK>>
+    --
+    * email : string
+    * address : string
+
+}
+
+entity Wallet {
+    * wallet_id : 64-bit Integer <<generated>> <<PK>>
+    --
+    * user_id : 64-bit Integer <<FK>>
+}
+
+entity Cryptocurrency {
+    * cryptocurrency_id : 64-bit Integer <<generated>> <<PK>>
+    --
+    * instrument_name : string
+    * instrument_ticker : char[4]
+}
+
+entity Asset_Balance {
+    * asset_balance_id : 64-bit Integer <<generated>> <<PK>>
+    --
+    * instrument_id : 64-bit Integer <<FK>>
+    * currency_id : 64-bit Integer <<FK>>
+    * balance : float 
+    * wallet_id : 64-bit Integer <<FK>>
+}
+
+entity Currency {
+    * currency_id : 64-bit Integer <<generated>> <<PK>>
+    --
+    * name : string
+    * currency_ticker : char[3]
+}
+
+entity Order {
+    * order_id : UUID Integer <<generated>> <<PK>>
+    --
+    * cryptocurrency_id : 
+}
+
+Users ||--|{ Wallet
+Asset_Balance }|--|| Wallet
+Asset_Balance ||--|| Instrument
+Asset_Balance ||--|| Currency
+
+@enduml
