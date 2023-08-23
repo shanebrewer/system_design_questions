@@ -1,0 +1,23 @@
+@startuml uber_high_level_system_design
+title Uber High-Level Architecture
+actor Driver
+actor Passenger
+top to bottom direction
+
+package "Clients" {
+    Driver --> [Driver Mobile App Client]
+    Passenger --> [Passenger Mobile App Client]
+}
+
+[Driver Mobile App Client] --> [DNS Server]
+[Passenger Mobile App Client] --> [DNS Server]
+
+[Driver Mobile App Client] --> [REST API Gateway]
+[Passenger Mobile App Client] --> [REST API Gateway]
+
+[REST API Gateway] --> [Web Service]
+
+database "DB" {
+    [Web Service] --> [DB Table]
+}
+@enduml
