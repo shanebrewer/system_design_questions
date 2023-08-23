@@ -1,0 +1,19 @@
+@startuml Coinbase Direct Data Models 
+title Coinbase Direct Data Models
+
+entity Users {
+    * user_id : 64-bit Integer <<generated>> <<PK>>
+    --
+    * name: string
+    * email : string
+    * address : string
+
+}
+
+entity Wallet {
+    * wallet_id : 64-bit Integer <<generated>> <<PK>>
+    --
+    * user_id : 64-bit Integer <<FK>>
+}
+
+@enduml
