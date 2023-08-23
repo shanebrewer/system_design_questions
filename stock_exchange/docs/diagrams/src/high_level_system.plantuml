@@ -9,51 +9,53 @@ package "Clients" {
     Trader --> [Trading Program]
 }
 
-[Web Client] --> [REST API Gateway]
-[Mobile App Client] --> [REST API Gateway]
-[Trading Program] --> [REST API Gateway]
+package "Exchange" {
+    package "REST API" {
+        [Web Client] --> [REST API Gateway]
+        [Mobile App Client] --> [REST API Gateway]
+        [Trading Program] --> [REST API Gateway]
+    }
+
+    [Web Client] <--> [Market Data Websocket]
+    [Mobile App Client] <--> [Market Data Websocket]
+    [Trading Program] <--> [Market Data Websocket]
+
+    package "Fix API" {
+        [Web Client] <--> [Websocket FIX Gateway]
+        [Mobile App Client] <--> [Websocket FIX Gateway]
+        [Trading Program] <--> [Websocket FIX Gateway]
+    }
 
 
+    [REST API Gateway] --> [Order Entry API Service]
 
-[Web Client] <--> [Market Data Websocket]
-[Mobile App Client] <--> [Market Data Websocket]
-[Trading Program] <--> [Market Data Websocket]
+    [Order Entry API Service] --> [Ledger Service]
+    [Order Entry API Service] --> [Trading Engine]
 
-package "Fix API" {
-    [Web Client] <--> [Websocket FIX Gateway]
-    [Mobile App Client] <--> [Websocket FIX Gateway]
-    [Trading Program] <--> [Websocket FIX Gateway]
+    [Websocket FIX Gateway] --> [Ledger Service]
+    [Websocket FIX Gateway] --> [Trading Engine]
+
+    database "Ledger" {
+        [Ledger Service] --> [User Account Table]
+    }
+
+    [Ledger Service] --> [Users Service]
+
+    database "Users" {
+        [Users Service] --> [Users Table]
+    }
+
+    queue "Message Bus"
+
+    [Trading Engine] --> [Message Bus]
+    [Trading Engine] --> [Data Feed Service]
+    [Data Feed Service] --> [Market Data Websocket]
+
+    [Message Bus] --> [Reporting]
+    [Message Bus] --> [Clearing Service]
+
+    database "Clearing (Postgres)" {
+        [Clearing Service] --> [Clearing Table]
+    }
 }
-
-[REST API Gateway] --> [Order Entry API Service]
-
-[Order Entry API Service] --> [Ledger Service]
-[Order Entry API Service] --> [Trading Engine]
-
-[Websocket FIX Gateway] --> [Ledger Service]
-[Websocket FIX Gateway] --> [Trading Engine]
-
-database "Ledger" {
-    [Ledger Service] --> [User Account Table]
-}
-
-[Ledger Service] --> [Users Service]
-
-database "Users" {
-    [Users Service] --> [Users Table]
-}
-
-queue "Message Bus"
-
-[Trading Engine] --> [Message Bus]
-[Trading Engine] --> [Data Feed Service]
-[Data Feed Service] --> [Market Data Websocket]
-
-[Message Bus] --> [Reporting]
-[Message Bus] --> [Clearing Service]
-
-database "Clearing (Postgres)" {
-    [Clearing Service] --> [Clearing Table]
-}
-
 @enduml
