@@ -8,24 +8,40 @@
 !include <awslib14/ApplicationIntegration/AppSync>
 !include <awslib14/Containers/ElasticKubernetesService>
 !include <awslib14/Database/AuroraPostgreSQLInstance>
+!include <aws/Compute/AmazonEC2/AmazonEC2>
+!include <office/Services/3rd_party_service>
 
 title Coinbase Direct High-Level Architecture
-actor "Direct to Exchange User" as DTEUser
 actor "Retail User" as RUser
 top to bottom direction
 
-package CBDirectFrontEnd {
-    AMAZONS3(s3)
-    AMAZONCLOUDFRONT(cf)
-
-    DTEUser --> [CB Direct Web App] : https://exchange.coinbase.com
-    [CB Direct Web App] <--> cf
-    cf <-- s3
+package "Direct-to-Exchange Users" {
+    actor "Direct to Exchange User" as DTEUser
+    [Algorithmic Trading Program]
 }
 
-package CoinbasePlatform {
+package "Coinbase Direct Front-end" {
+    AMAZONS3(cbds3)
+    AMAZONCLOUDFRONT(cbdcf)
+
+    DTEUser --> [CB Direct Web App] : https://exchange.coinbase.com
+    [CB Direct Web App] <--> cbdcf
+    cbdcf <-- cbds3
+}
+
+package "Coinbase Pro" {
+    AMAZONS3(pros3)
+    AMAZONCLOUDFRONT(procf)
+    
+    RUser --> [Coinbase Pro Web App] : https://pro.coinbase.com
+    [Coinbase Pro Web App] <--> procf
+    procf <-- pros3
+}
+
+package "Coinbase Platform" {
     AMAZONAPIGATEWAY(OrderEntryAPIGateway, "Order Entry API Gateway")
     AppSync(CoinbaseGraphQL, "Coinbase GraphQL Server", "")
+'    OFF_3RD_PARTY_SERVICE(datadog)
 
     [CB Direct Web App] --> OrderEntryAPIGateway
     OrderEntryAPIGateway --> CoinbaseGraphQL
@@ -35,9 +51,10 @@ package CoinbasePlatform {
     CoinbaseGraphQL --> [GraphQL Address Book Resolver] 
 
     [Datadog Service]
+   
 }
 
-package CBDirectBackend {
+package "Coinbase Direct Back-end" {
     ElasticKubernetesService(cbd_k8s, "Coinbase Direct Service", "")
     [GraphQL User Resolver] --> cbd_k8s
     [GraphQL Report Resolver] --> cbd_k8s
@@ -53,7 +70,7 @@ package CBDirectBackend {
 }
 
 package Transfers {
-    cbd_k8s --> [Transfers Service]
+    cbd_k8s --> [Transfers Service] : Deposits and Withdrawals
     [Transfers Service] --> [Fiat Service]
     [Fiat Service] --> [External Banks]
     [Transfers Service] --> [Crypto Service]
@@ -61,10 +78,36 @@ package Transfers {
 }
 
 package Exchange {
-    [REST API Gateway]
-    [FIX Gateway]
-    [Market Data Service]
+    together {
+    ElasticKubernetesService(rest_k8s, "REST API Gateway", "")
+    [Coinbase Pro Web App] --> rest_k8s
 
+    AMAZONEC2(fix_ec2, "FIX Gateway")
+    [Algorithmic Trading Program] <--> fix_ec2 : Trading Orders
+    
+    AMAZONEC2(md_ec2, "Market Data Service")
+    [Coinbase Pro Web App] <--> md_ec2
+    [Algorithmic Trading Program] <--> md_ec2
+    }
+
+    AMAZONEC2(oegw_ec2, "Order Entry Gateway")
+    rest_k8s --> oegw_ec2 : grpc
+    fix_ec2 --> oegw_ec2 : grpc
+
+    AMAZONEC2(te_ec2, "Trading Engine")
+    oegw_ec2 --> te_ec2 : grpc
+
+    AMAZONEC2(fs_ec2, "Feed Service")
+    te_ec2 --> fs_ec2 : grpc
+    fs_ec2 --> fix_ec2 : grpc
+
+    AMAZONEC2(cs_ec2, "Clearing Service")
+    te_ec2 --> cs_ec2 : grpc
+
+    AuroraPostgreSQLInstance(exch_db, "Exchange DB", "")
+    cbd_k8s --> exch_db : Report Data
+    oegw_ec2 --> exch_db : grpc
+    cs_ec2 --> exch_db : grpc
 }
 
 @enduml
